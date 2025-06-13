@@ -1,0 +1,566 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Cedar Cognito PetStore API",
+    "description": "API for managing pets in the Cedar Cognito PetStore application",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "/",
+      "description": "Root path"
+    }
+  ],
+  "paths": {
+    "/api/pets": {
+      "get": {
+        "summary": "List all pets",
+        "operationId": "ListPets",
+        "tags": ["Pets"],
+        "security": [
+          {
+            "cognitoAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of pets",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "results": {
+                      "type": "integer",
+                      "example": 2
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "pets": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Pet"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new pet",
+        "operationId": "CreatePet",
+        "tags": ["Pets"],
+        "security": [
+          {
+            "cognitoAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "species"],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Fluffy"
+                  },
+                  "species": {
+                    "type": "string",
+                    "example": "cat"
+                  },
+                  "breed": {
+                    "type": "string",
+                    "example": "Persian"
+                  },
+                  "age": {
+                    "type": "integer",
+                    "example": 3
+                  },
+                  "ownerName": {
+                    "type": "string",
+                    "example": "John Doe"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Pet created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "pet": {
+                          "$ref": "#/components/schemas/Pet"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/pets/{id}": {
+      "get": {
+        "summary": "Get a pet by ID",
+        "operationId": "GetPet",
+        "tags": ["Pets"],
+        "security": [
+          {
+            "cognitoAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The pet ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pet details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "pet": {
+                          "$ref": "#/components/schemas/Pet"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Pet not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a pet",
+        "operationId": "UpdatePet",
+        "tags": ["Pets"],
+        "security": [
+          {
+            "cognitoAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The pet ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Fluffy"
+                  },
+                  "species": {
+                    "type": "string",
+                    "example": "cat"
+                  },
+                  "breed": {
+                    "type": "string",
+                    "example": "Persian"
+                  },
+                  "age": {
+                    "type": "integer",
+                    "example": 4
+                  },
+                  "ownerName": {
+                    "type": "string",
+                    "example": "Jane Doe"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Pet updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "pet": {
+                          "$ref": "#/components/schemas/Pet"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Pet not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a pet",
+        "operationId": "DeletePet",
+        "tags": ["Pets"],
+        "security": [
+          {
+            "cognitoAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The pet ID"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Pet deleted successfully"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Pet not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Pet": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          },
+          "name": {
+            "type": "string",
+            "example": "Fluffy"
+          },
+          "species": {
+            "type": "string",
+            "example": "cat"
+          },
+          "breed": {
+            "type": "string",
+            "example": "Persian"
+          },
+          "age": {
+            "type": "integer",
+            "example": 3
+          },
+          "ownerId": {
+            "type": "string",
+            "example": "user@example.com"
+          },
+          "ownerName": {
+            "type": "string",
+            "example": "John Doe"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-01-01T12:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-01-01T12:00:00Z"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "sub": {
+            "type": "string",
+            "example": "12345678-1234-1234-1234-123456789012"
+          },
+          "email": {
+            "type": "string",
+            "example": "user@example.com"
+          },
+          "groups": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": ["Administrators", "Users"]
+          },
+          "token": {
+            "type": "string"
+          },
+          "tokenType": {
+            "type": "string",
+            "enum": ["access", "id"]
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "error"
+          },
+          "message": {
+            "type": "string",
+            "example": "Error message"
+          },
+          "details": {
+            "type": "object"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-01-01T12:00:00Z"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "cognitoAuth": {
+        "type": "oauth2",
+        "flows": {
+          "implicit": {
+            "authorizationUrl": "https://cognito-idp.{region}.amazonaws.com/{userPoolId}/oauth2/authorize",
+            "scopes": {
+              "openid": "OpenID Connect scope",
+              "email": "Email scope",
+              "profile": "User profile scope"
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Pets",
+      "description": "Pet management operations"
+    }
+  ],
+  "x-cedar-mappings": {
+    "mappingType": "SimpleRest",
+    "resourceType": "Application",
+    "actions": {
+      "ListPets": {
+        "httpVerb": "get",
+        "httpPathTemplate": "/api/pets"
+      },
+      "GetPet": {
+        "httpVerb": "get",
+        "httpPathTemplate": "/api/pets/{id}"
+      },
+      "CreatePet": {
+        "httpVerb": "post",
+        "httpPathTemplate": "/api/pets"
+      },
+      "UpdatePet": {
+        "httpVerb": "put",
+        "httpPathTemplate": "/api/pets/{id}"
+      },
+      "DeletePet": {
+        "httpVerb": "delete",
+        "httpPathTemplate": "/api/pets/{id}"
+      }
+    }
+  }
+}

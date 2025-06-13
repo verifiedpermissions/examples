@@ -1,0 +1,6 @@
+{
+  "static": {
+    "description": "Defines permitted customer user group actions",
+    "statement": "permit (    principal in PetStoreApp::UserGroup::\"<userPoolId>|customer\",    action in        [PetStoreApp::Action::\"GET /pets\",         PetStoreApp::Action::\"POST /pets\",         PetStoreApp::Action::\"GET /pets/{petId}\"],    resource);"
+  }
+}

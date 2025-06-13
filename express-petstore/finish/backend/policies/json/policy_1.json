@@ -1,0 +1,6 @@
+{
+  "static": {
+    "description": "Defines permitted administrator user group actions",
+    "statement": "permit (    principal in PetStoreApp::UserGroup::\"<userPoolId>|administrator\",    action,    resource);"
+  }
+}

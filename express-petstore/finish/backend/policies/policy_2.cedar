@@ -1,0 +1,10 @@
+// Defines permitted employee user group actions
+permit (
+    principal in PetStoreApp::UserGroup::"<userPoolId>|employee",
+    action in
+        [PetStoreApp::Action::"GET /pets",
+         PetStoreApp::Action::"POST /pets",
+         PetStoreApp::Action::"GET /pets/{petId}",
+         PetStoreApp::Action::"PUT /pets/{petId}"],
+    resource
+);
