@@ -1,0 +1,122 @@
+{
+  "PetStoreApp": {
+    "entityTypes": {
+      "User": {
+        "shape": {
+          "attributes": {},
+          "type": "Record"
+        },
+        "memberOfTypes": [
+          "UserGroup"
+        ]
+      },
+      "UserGroup": {
+        "shape": {
+          "attributes": {},
+          "type": "Record"
+        }
+      },
+      "Application": {
+        "shape": {
+          "attributes": {},
+          "type": "Record"
+        }
+      }
+    },
+    "actions": {
+      "GET /pets": {
+        "appliesTo": {
+          "context": {
+            "type": "Record",
+            "attributes": {}
+          },
+          "principalTypes": [
+            "User"
+          ],
+          "resourceTypes": [
+            "Application"
+          ]
+        },
+        "annotations": {
+          "httpVerb": "get",
+          "httpPathTemplate": "/api/pets"
+        }
+      },
+      "POST /pets": {
+        "appliesTo": {
+          "context": {
+            "type": "Record",
+            "attributes": {}
+          },
+          "principalTypes": [
+            "User"
+          ],
+          "resourceTypes": [
+            "Application"
+          ]
+        },
+        "annotations": {
+          "httpVerb": "post",
+          "httpPathTemplate": "/api/pets"
+        }
+      },
+      "GET /pets/{petId}": {
+        "appliesTo": {
+          "context": {
+            "type": "Record",
+            "attributes": {}
+          },
+          "principalTypes": [
+            "User"
+          ],
+          "resourceTypes": [
+            "Application"
+          ]
+        },
+        "annotations": {
+          "httpVerb": "get",
+          "httpPathTemplate": "/api/pets/{id}"
+        }
+      },
+      "PUT /pets/{petId}": {
+        "appliesTo": {
+          "context": {
+            "type": "Record",
+            "attributes": {}
+          },
+          "principalTypes": [
+            "User"
+          ],
+          "resourceTypes": [
+            "Application"
+          ]
+        },
+        "annotations": {
+          "httpVerb": "put",
+          "httpPathTemplate": "/api/pets/{id}"
+        }
+      },
+      "DELETE /pets/{petId}": {
+        "appliesTo": {
+          "context": {
+            "type": "Record",
+            "attributes": {}
+          },
+          "principalTypes": [
+            "User"
+          ],
+          "resourceTypes": [
+            "Application"
+          ]
+        },
+        "annotations": {
+          "httpVerb": "delete",
+          "httpPathTemplate": "/api/pets/{id}"
+        }
+      }
+    },
+    "annotations": {
+      "mappingType": "SimpleRest"
+    }
+  }
+}

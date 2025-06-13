@@ -1,0 +1,9 @@
+{
+    "cognitoUserPoolConfiguration": {
+        "userPoolArn": "<userPoolArn>",
+        "clientIds":["<clientId>"] ,
+        "groupConfiguration": {
+              "groupEntityType": "PetStoreApp::UserGroup"
+        }
+    }
+}

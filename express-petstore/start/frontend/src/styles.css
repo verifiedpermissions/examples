@@ -1,0 +1,43 @@
+/* Fixes for React 18 and Cloudscape compatibility */
+
+/* Fix for React 18 Strict Mode and Cloudscape focus management */
+:focus:not(:focus-visible) {
+  outline: none !important;
+}
+
+/* Fix for Cloudscape components in React 18 */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Amazon Ember', 'Helvetica Neue', Roboto, Arial, sans-serif;
+}
+
+/* Ensure proper spacing in containers */
+.app-content {
+  width: 100%;
+  min-height: calc(100vh - 60px); /* Adjust for header height */
+}
+
+/* Fix for modal dialogs in React 18 */
+#modal-root {
+  position: relative;
+  z-index: 9000;
+}
+
+/* Ensure fixed headers don't overlap content */
+.awsui-header-sticky {
+  z-index: 1000;
+}
+
+/* Fix for popover positioning in React 18 */
+.awsui-popover-container {
+  z-index: 2000;
+}
+
+/* Fix for Cloudscape form controls */
+.awsui-input-container input:focus,
+.awsui-input-container textarea:focus,
+.awsui-input-container select:focus {
+  outline: 2px solid #0972d3;
+  outline-offset: -1px;
+}

@@ -1,0 +1,46 @@
+{
+  "Pets": [
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "pet-1" },
+          "name": { "S": "Fluffy" },
+          "species": { "S": "Cat" },
+          "breed": { "S": "Persian" },
+          "age": { "N": "3" },
+          "ownerId": { "S": "admin@example.com" },
+          "createdAt": { "S": "2025-05-22T10:00:00Z" },
+          "updatedAt": { "S": "2025-05-22T10:00:00Z" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "pet-2" },
+          "name": { "S": "Buddy" },
+          "species": { "S": "Dog" },
+          "breed": { "S": "Golden Retriever" },
+          "age": { "N": "5" },
+          "ownerId": { "S": "admin@example.com" },
+          "createdAt": { "S": "2025-05-22T10:00:00Z" },
+          "updatedAt": { "S": "2025-05-22T10:00:00Z" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": { "S": "pet-3" },
+          "name": { "S": "Max" },
+          "species": { "S": "Dog" },
+          "breed": { "S": "German Shepherd" },
+          "age": { "N": "2" },
+          "ownerId": { "S": "customer@example.com" },
+          "createdAt": { "S": "2025-05-22T10:00:00Z" },
+          "updatedAt": { "S": "2025-05-22T10:00:00Z" }
+        }
+      }
+    }
+  ]
+}
