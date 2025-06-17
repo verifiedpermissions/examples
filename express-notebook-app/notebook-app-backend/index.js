@@ -55,7 +55,7 @@ const expressAuthorization = new ExpressAuthorizationMiddleware({
         { httpVerb: 'get', path: '/notebooks/:id' },
         { httpVerb: 'put', path: '/notebooks/:id' },
         { httpVerb: 'delete', path: '/notebooks/:id' },
-        { httpVerb: 'put', path: '/notebook/share' },
+        { httpVerb: 'put', path: '/share-notebook' },
     ],
     logger: {
         debug: s => console.log(s),
@@ -235,7 +235,7 @@ const shareNotebookOperation = {
     },
 };
 app.put(
-    '/notebook/share',
+    '/share-notebook',
     oaig.PathMiddleware.path('shareNotebook', { operationObject: shareNotebookOperation }),
     expressAuthorization.handlerSpecificMiddleware({
         resourceProvider: async req => {
@@ -319,7 +319,7 @@ app.put(
     }
 });
 
-app.get('/notebooks/shared-with-me', async (req, res) => {
+app.get('/shared-with-me', async (req, res) => {
     try {
         const userId = req.user.sub; // Use the sub from the verified JWT
 
@@ -339,6 +339,7 @@ app.get('/notebooks/shared-with-me', async (req, res) => {
         const command = new ListPoliciesCommand(params);
         const response = await verifiedPermissionsClient.send(command);
         const resourceIds = response.policies.map(policy => policy.resource);
+        console.log('Resource IDs:', resourceIds);
 
         res.json(resourceIds);
     } catch (error) {

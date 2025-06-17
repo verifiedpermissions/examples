@@ -162,7 +162,25 @@
           "httpPathTemplate": "/notebooks/{id}"
         }
       },
-      "get /notebooks/shared-with-me": {
+      "shareNotebook": {
+        "appliesTo": {
+          "context": {
+            "type": "Record",
+            "attributes": {}
+          },
+          "principalTypes": [
+            "User"
+          ],
+          "resourceTypes": [
+            "Notebook"
+          ]
+        },
+        "annotations": {
+          "httpVerb": "put",
+          "httpPathTemplate": "/share-notebook"
+        }
+      },
+      "get /shared-with-me": {
         "appliesTo": {
           "context": {
             "type": "Record",
@@ -177,7 +195,7 @@
         },
         "annotations": {
           "httpVerb": "get",
-          "httpPathTemplate": "/notebooks/shared-with-me"
+          "httpPathTemplate": "/shared-with-me"
         }
       }
     },

@@ -3,7 +3,8 @@ import Spinner from "./components/spinner";
 import { Route, Routes } from "react-router";
 import Notebook from "./routes/notebook";
 import Notebooks from "./routes/notebooks";
-import Note from "./routes/note";
+import SharedNotebooks from "./routes/shared-notebooks";
+import Sidenav from "./components/sidenav";
 import { NotebooksProvider, useNotebooks } from "./state/appState";
 import React, { useState, useEffect } from 'react';
 import './App.css';
@@ -75,14 +76,15 @@ function AppContent() {
   const auth = useAuth();
 
   return (
-    <div>
-      <nav>
-        {auth.user?.profile.email}
-      </nav>
-      <Routes>
-        <Route path={'/'} element={<Notebooks />} />
-        <Route path={'/notebooks/:notebookId'} element={<Notebook />} />
-      </Routes>
+    <div className='app-container'>
+      <Sidenav />
+      <div className="main-content">
+        <Routes>
+          <Route path={'/'} element={<Notebooks />} />
+          <Route path={'/shared'} element={<SharedNotebooks />} />
+          <Route path={'/notebooks/:notebookId'} element={<Notebook />} />
+        </Routes>
+      </div>
       
       {
         !!auth.user && (

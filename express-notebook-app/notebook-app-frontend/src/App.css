@@ -1,3 +1,12 @@
+* {
+  box-sizing: border-box !important;
+}
+
+.app-container {
+  display:flex;
+  flex-direction: row;
+}
+
 /* Floating Action Button */
 .floating-action-button {
   position: fixed;
@@ -23,6 +32,47 @@
 }
 
 /* Modal Styles */
+.sidenav {
+  width: 250px;
+  height: 100vh;
+  background-color: #f8f9fa;
+  padding: 20px;
+  left: 0;
+  top: 0;
+  border-right: 1px solid #dee2e6;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidenav-link {
+  display: block;
+  padding: 10px;
+  color: #333;
+  text-decoration: none;
+  margin-bottom: 5px;
+  border-radius: 4px;
+}
+
+.sidenav-link:hover {
+  background-color: #e9ecef;
+}
+
+.sidenav-link.active {
+  background-color: #007bff;
+  color: white;
+}
+
+.sidenav-footer {
+  margin: auto 0 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: right;
+}
+
+.main-content {
+  margin: 20px;
+}
+
 .modal-overlay {
   position: fixed;
   top: 0;

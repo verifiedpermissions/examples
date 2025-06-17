@@ -15,8 +15,11 @@ type NotebooksListState =
 
 interface NotebooksContextType {
     notebooksListState: NotebooksListState;
+    sharedNotebooksListState: NotebooksListState;
     setNotebooksList: (n: Notebook[]) => void;
     setNotebooksListError: (e: string) => void;
+    setSharedNotebooksList: (n: Notebook[]) => void;
+    setSharedNotebooksListError: (e: string) => void;
 }
 
 const NotebooksContext = createContext<NotebooksContextType | undefined>(undefined);
@@ -25,14 +28,24 @@ export function NotebooksProvider({ children }: { children: React.ReactNode }) {
     const [notebooksListState, setNotebooksListState] = useState<NotebooksListState>({
         loading: true
     });
+    const [sharedNotebooksListState, setSharedNotebooksListState] = useState<NotebooksListState>({
+        loading: true
+    });
 
     const value = {
         notebooksListState,
+        sharedNotebooksListState,
         setNotebooksList: (notebooks: Notebook[]) => {
             setNotebooksListState({notebooks});
         },
         setNotebooksListError: (error: string) => {
             setNotebooksListState({ error });
+        },
+        setSharedNotebooksList: (notebooks: Notebook[]) => {
+            setSharedNotebooksListState({notebooks});
+        },
+        setSharedNotebooksListError: (error: string) => {
+            setSharedNotebooksListState({ error });
         },
     };
 
@@ -55,8 +68,11 @@ export function useNotebooks() {
     }
     const {
         notebooksListState,
+        sharedNotebooksListState,
         setNotebooksList,
         setNotebooksListError,
+        setSharedNotebooksList,
+        setSharedNotebooksListError,
     } = context;
 
     const headers = () => {
@@ -72,6 +88,15 @@ export function useNotebooks() {
             return;
         }
         setNotebooksList(notebooksResult);
+    };
+
+    const loadSharedNotebooks = async () => {
+        const sharedNotebooksResult = await fetchJson<Notebook[]>('/shared-with-me', { headers: headers() });
+        if (isApiError(sharedNotebooksResult)) {
+            setSharedNotebooksListError(sharedNotebooksResult.error);
+            return;
+        }
+        setSharedNotebooksList(sharedNotebooksResult);
     };
 
     const loadNotebookById = async (notebookId: string) => {
@@ -103,7 +128,9 @@ export function useNotebooks() {
 
     return {
         notebooksListState,
+        sharedNotebooksListState,
         loadNotebooks,
+        loadSharedNotebooks,
         loadNotebookById,
         createNotebook,
     };

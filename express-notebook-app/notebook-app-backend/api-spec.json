@@ -106,7 +106,29 @@
                 }
             }
         },
-        "/notebooks/shared-with-me": {
+        "/share-notebook": {
+            "put": {
+                "operationId": "shareNotebook",
+                "x-cedar": {
+                    "appliesToResourceTypes": [
+                        "Notebook"
+                    ]
+                },
+                "responses": {
+                    "200": {
+                        "description": "Get notebook by id",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Notebook"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/shared-with-me": {
             "get": {
                 "responses": {
                     "default": {
