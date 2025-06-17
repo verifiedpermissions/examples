@@ -56,6 +56,7 @@ const expressAuthorization = new ExpressAuthorizationMiddleware({
         { httpVerb: 'put', path: '/notebooks/:id' },
         { httpVerb: 'delete', path: '/notebooks/:id' },
         { httpVerb: 'put', path: '/share-notebook' },
+        { httpVerb: 'get', path: '/get-acl/:notebookId' },
     ],
     logger: {
         debug: s => console.log(s),
@@ -239,11 +240,11 @@ app.put(
     oaig.PathMiddleware.path('shareNotebook', { operationObject: shareNotebookOperation }),
     expressAuthorization.handlerSpecificMiddleware({
         resourceProvider: async req => {
-            const notebook = await notebooksRepository.findById(req.params.id);
+            const notebook = await notebooksRepository.findById(req.body.notebookId);
             return {
                 uid: {
                     type: 'NotebooksApp::Notebook',
-                    id: req.params.id
+                    id: req.body.notebookId
                 },
                 attrs: notebook,
                 parents: [],
@@ -258,12 +259,12 @@ app.put(
             return res.status(400).json({ error: 'Missing required fields: notebookId and email' });
         }
 
-        // Step 1: Look up user by email in Cognito
         const listUsersParams = {
-            UserPoolId: process.env.USER_POOL_ID,
+            UserPoolId: process.env.USERPOOL_ID,
             Filter: `email = "${email}"`,
             Limit: 1
         };
+        console.log('Step 1: Look up user by email in Cognito', listUsersParams);
         
         const listUsersCommand = new ListUsersCommand(listUsersParams);
         const usersResponse = await cognitoClient.send(listUsersCommand);
@@ -274,7 +275,7 @@ app.put(
 
         const userSub = usersResponse.Users[0].Attributes.find(attr => attr.Name === 'sub').Value;
 
-        // Step 2: Check if policy already exists
+        console.log('Step 2: Check if policy already exists');
         const listPoliciesParams = {
             policyStoreId: process.env.POLICY_STORE_ID,
             filter: {
@@ -296,20 +297,23 @@ app.put(
         const listPoliciesCommand = new ListPoliciesCommand(listPoliciesParams);
         const policiesResponse = await verifiedPermissionsClient.send(listPoliciesCommand);
 
-        // Step 3: If policy exists, return 200
+        console.log('Step 3: If policy exists, return 200');
         if (policiesResponse.policies && policiesResponse.policies.length > 0) {
             return res.status(200).json({ message: 'Notebook already shared with user' });
         }
 
-        // Step 4: Create new policy
-        const policyStatement = `permit(principal == NotebooksApp::User::\"${userSub}\", action == NotebooksApp::Action::\"getNotebookById\", resource == NotebooksApp::Notebook::\"${notebookId}\");`;
+        console.log('Step 4: Create new policy');
+        const policyStatement = `permit(principal == NotebooksApp::User::\"${process.env.USERPOOL_ID}|${userSub}\", action == NotebooksApp::Action::\"getNotebookById\", resource == NotebooksApp::Notebook::\"${notebookId}\");`;
         
-        const createPolicyParams = {
+        const createPolicyCommand = new CreatePolicyCommand({
             policyStoreId: process.env.POLICY_STORE_ID,
-            statement: policyStatement
-        };
-
-        const createPolicyCommand = new CreatePolicyCommand(createPolicyParams);
+            definition: {
+                static: {
+                    statement: policyStatement,
+                    description: `Grant user ${email} access to notebook ${notebookId}`
+                }
+            }
+        });
         await verifiedPermissionsClient.send(createPolicyCommand);
 
         res.status(200).json({ message: 'Notebook shared successfully' });
@@ -318,6 +322,104 @@ app.put(
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
+const getNotebookAclOperation = {
+    operationId: 'getNotebookAcl',
+    'x-cedar': {
+        appliesToResourceTypes: [NOTEBOOK]
+    },
+    responses: {
+        '200': {
+            description: 'Get notebook ACL',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            acl: {
+                                type: 'array',
+                                items: {
+                                    type: 'string'
+                                }
+                            }
+                        }
+                    }
+                },
+            },
+        },
+    },
+};
+
+app.get('/get-acl/:notebookId',
+    oaig.PathMiddleware.path('getNotebookAcl', { operationObject: getNotebookAclOperation }),
+    expressAuthorization.handlerSpecificMiddleware({
+        resourceProvider: async req => {
+            const notebook = await notebooksRepository.findById(req.params.notebookId);
+            return {
+                uid: {
+                    type: 'NotebooksApp::Notebook',
+                    id: req.params.notebookId
+                },
+                attrs: notebook,
+                parents: [],
+            }
+        }
+    }),
+    async (req, res) => {
+        try {
+            const params = {
+                policyStoreId: process.env.POLICY_STORE_ID,
+                filter: {
+                    resource: {
+                        identifier: {
+                            entityType: 'NotebooksApp::Notebook',
+                            entityId: req.params.notebookId
+                        }
+                    }
+                }
+            };
+
+            const command = new ListPoliciesCommand(params);
+            const response = await verifiedPermissionsClient.send(command);
+
+            if (!response.policies || response.policies.length === 0) {
+                return res.json({ acl: [] });
+            }
+
+            console.log('Policies', response.policies);
+
+            const entityIds = response.policies.map(policy => 
+                policy.principal.entityId
+            );
+
+            // Look up emails for each entityId in Cognito
+            const emailPromises = entityIds.map(async (entityId) => {
+                const listUsersParams = {
+                    UserPoolId: process.env.USERPOOL_ID,
+                    Filter: `sub = "${entityId}"`,
+                    Limit: 1
+                };
+                
+                const listUsersCommand = new ListUsersCommand(listUsersParams);
+                const usersResponse = await cognitoClient.send(listUsersCommand);
+                
+                if (usersResponse.Users && usersResponse.Users.length > 0) {
+                    const emailAttr = usersResponse.Users[0].Attributes.find(attr => attr.Name === 'email');
+                    return emailAttr ? emailAttr.Value : null;
+                }
+                return null;
+            });
+
+            const emails = (await Promise.all(emailPromises))
+                .filter(email => email !== null)
+                .map(userPoolWithEmail => userPoolWithEmail.split('|')[1]);
+            res.json({ acl: emails });
+        } catch (error) {
+            console.error('Error fetching notebook ACL:', error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    });
+
 
 app.get('/shared-with-me', async (req, res) => {
     try {
@@ -330,7 +432,7 @@ app.get('/shared-with-me', async (req, res) => {
                 principal: {
                     identifier: {
                         entityType: 'NotebooksApp::User',
-                        entityId: userId
+                        entityId: `${process.env.USERPOOL_ID}|${userId}`
                     }
                 }
             }
@@ -338,10 +440,10 @@ app.get('/shared-with-me', async (req, res) => {
 
         const command = new ListPoliciesCommand(params);
         const response = await verifiedPermissionsClient.send(command);
-        const resourceIds = response.policies.map(policy => policy.resource);
-        console.log('Resource IDs:', resourceIds);
-
-        res.json(resourceIds);
+        const notebookIds = response.policies.map(policy => policy.resource.entityId);
+        console.log('Notebook IDs shared with me:', notebookIds);
+        const notebooks = await notebooksRepository.findManyById(notebookIds);
+        res.json(notebooks);
     } catch (error) {
         console.error('Error fetching shared notebooks:', error);
         res.status(500).send('Internal server error');

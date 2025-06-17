@@ -180,6 +180,38 @@
           "httpPathTemplate": "/share-notebook"
         }
       },
+      "getNotebookAcl": {
+        "appliesTo": {
+          "context": {
+            "type": "Record",
+            "attributes": {
+              "pathParameters": {
+                "type": "Record",
+                "attributes": {
+                  "notebookId": {
+                    "type": "String",
+                    "required": true
+                  }
+                }
+              },
+              "queryStringParameters": {
+                "type": "Record",
+                "attributes": {}
+              }
+            }
+          },
+          "principalTypes": [
+            "User"
+          ],
+          "resourceTypes": [
+            "Notebook"
+          ]
+        },
+        "annotations": {
+          "httpVerb": "get",
+          "httpPathTemplate": "/get-acl/{notebookId}"
+        }
+      },
       "get /shared-with-me": {
         "appliesTo": {
           "context": {

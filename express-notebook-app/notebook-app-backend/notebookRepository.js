@@ -69,6 +69,9 @@ class NotebooksRepository {
     async deleteNotebook(notebookId) {
       notebooks = notebooks.filter(n => n.id !== notebookId);
     }
+    async findManyById(notebookIds) {
+        return notebooks.filter(notebook => notebookIds.includes(notebook.id));
+    }
 }
 
 module.exports = {

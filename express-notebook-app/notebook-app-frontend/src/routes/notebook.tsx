@@ -44,6 +44,8 @@ export default function NotebookView() {
             name={notebookInfo.name}
             content={notebookInfo.content}
             href={`/notebooks/${notebookInfo.id}`}
+            public={notebookInfo.public || false}
+            owner={notebookInfo.owner}
         />
     )
 }

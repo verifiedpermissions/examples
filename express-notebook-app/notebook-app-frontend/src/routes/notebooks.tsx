@@ -44,6 +44,8 @@ export default function Notebooks() {
                                 name={notebook.name}
                                 content={notebook.content}
                                 href={`/notebooks/${notebook.id}`}
+                                public={notebook.public || false}
+                                owner={notebook.owner}
                             />
                         )
                     })

@@ -156,6 +156,34 @@
           ]
         }
       },
+      "getNotebookAcl": {
+        "appliesTo": {
+          "context": {
+            "type": "Record",
+            "attributes": {
+              "pathParameters": {
+                "type": "Record",
+                "attributes": {
+                  "notebookId": {
+                    "type": "String",
+                    "required": true
+                  }
+                }
+              },
+              "queryStringParameters": {
+                "type": "Record",
+                "attributes": {}
+              }
+            }
+          },
+          "principalTypes": [
+            "User"
+          ],
+          "resourceTypes": [
+            "Notebook"
+          ]
+        }
+      },
       "get /shared-with-me": {
         "appliesTo": {
           "context": {

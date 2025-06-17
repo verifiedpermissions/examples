@@ -128,6 +128,46 @@
                 }
             }
         },
+        "/get-acl/{notebookId}": {
+            "get": {
+                "operationId": "getNotebookAcl",
+                "x-cedar": {
+                    "appliesToResourceTypes": [
+                        "Notebook"
+                    ]
+                },
+                "responses": {
+                    "200": {
+                        "description": "Get notebook ACL",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "acl": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "notebookId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ]
+            }
+        },
         "/shared-with-me": {
             "get": {
                 "responses": {

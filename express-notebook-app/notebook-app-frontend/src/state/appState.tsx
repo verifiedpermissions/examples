@@ -6,6 +6,7 @@ export interface Notebook {
     name: string;
     owner: string;
     content: string
+    public: boolean;
 }
 
 type NotebooksListState =
@@ -108,6 +109,48 @@ export function useNotebooks() {
         return notebookResult;
     };
 
+    const shareNotebook = async (notebookId: string, email: string): Promise<string[]> => {
+        const result = await fetchJson<{ message: string }>('/share-notebook', {
+            method: 'PUT',
+            headers: {
+                ...headers(),
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ notebookId, email }),
+        });
+        if (isApiError(result)) {
+            alert("Error: " + result.error);
+            return [];
+        }
+
+        // Get updated ACL after sharing
+        const aclResult = await fetchJson<{ acl: string[] }>(`/get-acl/${notebookId}`, {
+            headers: headers(),
+        });
+        if (isApiError(aclResult)) {
+            alert("Error loading updated sharing information");
+            return [];
+        }
+
+        // Due to eventual consistency, ensure the new email is in the results
+        const acl = aclResult.acl;
+        if (!acl.includes(email)) {
+            acl.unshift(email); // Add at the top if not present
+        }
+        return acl;
+    };
+
+    const getNotebookAcl = async (notebookId: string): Promise<string[]> => {
+        const result = await fetchJson<{ acl: string[] }>(`/get-acl/${notebookId}`, {
+            headers: headers(),
+        });
+        if (isApiError(result)) {
+            alert("Error: " + result.error);
+            return [];
+        }
+        return result.acl;
+    };
+
     const createNotebook = async (name: string, content: string) => {
         const notebookResult = await fetchJson<Notebook>('/notebooks', {
             method: 'POST',
@@ -133,6 +176,8 @@ export function useNotebooks() {
         loadSharedNotebooks,
         loadNotebookById,
         createNotebook,
+        shareNotebook,
+        getNotebookAcl,
     };
 }
 
