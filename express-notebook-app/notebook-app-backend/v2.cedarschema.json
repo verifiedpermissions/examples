@@ -1,0 +1,187 @@
+{
+  "NotebooksApp": {
+    "entityTypes": {
+      "User": {
+        "shape": {
+          "attributes": {},
+          "type": "Record"
+        },
+        "memberOfTypes": [
+          "UserGroup"
+        ]
+      },
+      "UserGroup": {
+        "shape": {
+          "attributes": {},
+          "type": "Record"
+        }
+      },
+      "Application": {
+        "shape": {
+          "attributes": {},
+          "type": "Record"
+        }
+      },
+      "Notebook": {
+        "shape": {
+          "type": "Notebook"
+        },
+        "memberOfTypes": []
+      }
+    },
+    "actions": {
+      "get /notebooks": {
+        "appliesTo": {
+          "context": {
+            "type": "Record",
+            "attributes": {}
+          },
+          "principalTypes": [
+            "User"
+          ],
+          "resourceTypes": [
+            "Application"
+          ]
+        }
+      },
+      "post /notebooks": {
+        "appliesTo": {
+          "context": {
+            "type": "Record",
+            "attributes": {}
+          },
+          "principalTypes": [
+            "User"
+          ],
+          "resourceTypes": [
+            "Application"
+          ]
+        }
+      },
+      "getNotebookById": {
+        "appliesTo": {
+          "context": {
+            "type": "Record",
+            "attributes": {
+              "pathParameters": {
+                "type": "Record",
+                "attributes": {
+                  "id": {
+                    "type": "String",
+                    "required": true
+                  }
+                }
+              },
+              "queryStringParameters": {
+                "type": "Record",
+                "attributes": {}
+              }
+            }
+          },
+          "principalTypes": [
+            "User"
+          ],
+          "resourceTypes": [
+            "Notebook"
+          ]
+        }
+      },
+      "putNotebook": {
+        "appliesTo": {
+          "context": {
+            "type": "Record",
+            "attributes": {
+              "pathParameters": {
+                "type": "Record",
+                "attributes": {
+                  "id": {
+                    "type": "String",
+                    "required": true
+                  }
+                }
+              },
+              "queryStringParameters": {
+                "type": "Record",
+                "attributes": {}
+              }
+            }
+          },
+          "principalTypes": [
+            "User"
+          ],
+          "resourceTypes": [
+            "Notebook"
+          ]
+        }
+      },
+      "deleteNotebook": {
+        "appliesTo": {
+          "context": {
+            "type": "Record",
+            "attributes": {
+              "pathParameters": {
+                "type": "Record",
+                "attributes": {
+                  "id": {
+                    "type": "String",
+                    "required": true
+                  }
+                }
+              },
+              "queryStringParameters": {
+                "type": "Record",
+                "attributes": {}
+              }
+            }
+          },
+          "principalTypes": [
+            "User"
+          ],
+          "resourceTypes": [
+            "Notebook"
+          ]
+        }
+      },
+      "get /notebooks/shared-with-me": {
+        "appliesTo": {
+          "context": {
+            "type": "Record",
+            "attributes": {}
+          },
+          "principalTypes": [
+            "User"
+          ],
+          "resourceTypes": [
+            "Application"
+          ]
+        }
+      }
+    },
+    "commonTypes": {
+      "Notebook": {
+        "type": "Record",
+        "attributes": {
+          "id": {
+            "type": "String",
+            "required": true
+          },
+          "name": {
+            "type": "String",
+            "required": true
+          },
+          "owner": {
+            "type": "String",
+            "required": true
+          },
+          "content": {
+            "type": "String",
+            "required": true
+          },
+          "public": {
+            "type": "Boolean"
+          }
+        }
+      }
+    }
+  }
+}
