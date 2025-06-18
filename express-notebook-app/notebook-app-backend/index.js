@@ -229,7 +229,14 @@ const shareNotebookOperation = {
             description: 'Get notebook by id',
             content: {
                 'application/json': {
-                    schema: documentBuilder.schema(NOTEBOOK),
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            message: {
+                                type: 'string',
+                            }
+                        }
+                    }
                 },
             },
         },
@@ -386,11 +393,9 @@ app.get('/get-acl/:notebookId',
                 return res.json({ acl: [] });
             }
 
-            console.log('Policies', response.policies);
-
             const entityIds = response.policies.map(policy => 
                 policy.principal.entityId
-            );
+            ).map(userpoolWithSub => userpoolWithSub.split('|')[1]);
 
             // Look up emails for each entityId in Cognito
             const emailPromises = entityIds.map(async (entityId) => {
@@ -402,17 +407,18 @@ app.get('/get-acl/:notebookId',
                 
                 const listUsersCommand = new ListUsersCommand(listUsersParams);
                 const usersResponse = await cognitoClient.send(listUsersCommand);
+                console.log('Cognito response', usersResponse);
                 
                 if (usersResponse.Users && usersResponse.Users.length > 0) {
                     const emailAttr = usersResponse.Users[0].Attributes.find(attr => attr.Name === 'email');
+                    console.log('Email', emailAttr);
                     return emailAttr ? emailAttr.Value : null;
                 }
                 return null;
             });
 
             const emails = (await Promise.all(emailPromises))
-                .filter(email => email !== null)
-                .map(userPoolWithEmail => userPoolWithEmail.split('|')[1]);
+                .filter(email => email !== null);
             res.json({ acl: emails });
         } catch (error) {
             console.error('Error fetching notebook ACL:', error);
