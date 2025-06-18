@@ -1,0 +1,145 @@
+* {
+  box-sizing: border-box !important;
+}
+
+.app-container {
+  display:flex;
+  flex-direction: row;
+}
+
+/* Floating Action Button */
+.floating-action-button {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #2ecc71;
+  color: white;
+  font-size: 24px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.floating-action-button:hover {
+  background-color: #27ae60;
+}
+
+/* Modal Styles */
+.sidenav {
+  width: 250px;
+  height: 100vh;
+  background-color: #f8f9fa;
+  padding: 20px;
+  left: 0;
+  top: 0;
+  border-right: 1px solid #dee2e6;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidenav-link {
+  display: block;
+  padding: 10px;
+  color: #333;
+  text-decoration: none;
+  margin-bottom: 5px;
+  border-radius: 4px;
+}
+
+.sidenav-link:hover {
+  background-color: #e9ecef;
+}
+
+.sidenav-link.active {
+  background-color: #007bff;
+  color: white;
+}
+
+.sidenav-footer {
+  margin: auto 0 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: right;
+}
+
+.main-content {
+  margin: 20px;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.modal-actions button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.modal-actions button:first-child {
+  background-color: #f1f1f1;
+  border: 1px solid #ddd;
+}
+
+.modal-actions button:last-child {
+  background-color: #2ecc71;
+  color: white;
+  border: none;
+}
+
+.modal-actions button:last-child:disabled {
+  background-color: #95e6b8;
+  cursor: not-allowed;
+}

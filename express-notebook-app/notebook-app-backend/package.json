@@ -1,0 +1,29 @@
+{
+  "name": "sample-express-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js",
+    "generateschema": "npx @cedar-policy/authorization-for-expressjs generate-schema --api-spec api-spec.json --namespace NotebooksApp --mapping-type SimpleRest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-cognito-identity-provider": "^3.830.0",
+    "@aws-sdk/client-verifiedpermissions": "^3.788.0",
+    "@cedar-policy/authorization-for-expressjs": "^0.1.0",
+    "@verifiedpermissions/authorization-clients-js": "^0.1.0",
+    "express": "^4.21.2",
+    "express-jwt": "^8.5.1",
+    "jsonwebtoken": "^9.0.2",
+    "jwks-rsa": "^3.2.0"
+  },
+  "devDependencies": {
+    "ajv": "^8.17.1",
+    "express-openapi-generator": "^1.2.0",
+    "nodemon": "^3.1.9"
+  }
+}
