@@ -11,12 +11,12 @@
   },
   "servers": [
     {
-      "url": "/api",
-      "description": "API base path"
+      "url": "http://localhost:3000/api",
+      "description": "Local development server"
     }
   ],
   "paths": {
-    "/api/pets": {
+    "/pets": {
       "get": {
         "summary": "List all pets",
         "description": "Returns a list of all pets in the system that the user has access to view. If the user is an admin or employee, all pets are returned. Otherwise, only pets owned by the user are returned.",
@@ -182,7 +182,7 @@
         }
       }
     },
-    "/api/pets/{id}": {
+    "/pets/{id}": {
       "get": {
         "summary": "Get a pet by ID",
         "description": "Returns a single pet by its unique identifier.",
